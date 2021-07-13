@@ -18,6 +18,11 @@
     },
     "scripts": {},
     "keywords": [],
+    "dependencies": {
+        "commander": "^8.0.0",
+        "es-dirname": "^0.1.0",
+        "glob": "^7.1.7"
+    },
     "devDependencies": {
         "@babel/core": "^7.14.6",
         "@babel/eslint-parser": "^7.14.7",
