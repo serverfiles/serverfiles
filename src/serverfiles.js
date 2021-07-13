@@ -5,7 +5,7 @@
  */
 
 const { Command } = require('commander')
-const cmds = require('./cmds/index')
+const config = require('./cmds/config/index')
 
 // create a new command line interface
 const program = new Command()
@@ -13,11 +13,9 @@ const program = new Command()
     .helpOption('-h, --help', 'this message 🤷‍♂️')
     .option('-V, --verbose', 'show additional 🔬 output')
     .addHelpCommand(true, 'help 📖 for a given command')
+    .addCommand(config)
 
 const main = async () => {
-    // link all commands to the program
-    await cmds(program)
-
     // parse the command line arguments
     await program.parseAsync(process.argv)
 }
