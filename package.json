@@ -19,14 +19,18 @@
     "scripts": {},
     "keywords": [],
     "dependencies": {
+        "@vasanthdeveloper/utilities": "^0.1.0",
         "commander": "^8.0.0",
         "es-dirname": "^0.1.0",
-        "glob": "^7.1.7"
+        "glob": "^7.1.7",
+        "joi": "^17.4.1",
+        "js-yaml": "^4.1.0"
     },
     "devDependencies": {
         "@babel/core": "^7.14.6",
         "@babel/eslint-parser": "^7.14.7",
         "@babel/plugin-syntax-top-level-await": "^7.14.5",
+        "@types/js-yaml": "^4.0.2",
         "eslint": "^7.30.0",
         "eslint-config-prettier": "^8.3.0",
         "eslint-plugin-prettier": "^3.4.0",

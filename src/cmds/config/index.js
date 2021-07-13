@@ -5,8 +5,13 @@
 
 import { Command } from 'commander'
 
+import getConfig from '../../config/index.js'
+
 const action = async args => {
-    console.log('generate and install config files')
+    // read the serverfiles.yml file in the current directory
+    const config = await getConfig()
+
+    console.log(config)
 }
 
 export default new Command()
