@@ -3,9 +3,9 @@
  *  Created On 13 July 2021
  */
 
-import { Command } from 'commander'
+const { Command } = require('commander')
 
-import getConfig from '../../config/index.js'
+const getConfig = require('../../config/index')
 
 const action = async args => {
     // read the serverfiles.yml file in the current directory
@@ -14,7 +14,7 @@ const action = async args => {
     console.log(config)
 }
 
-export default new Command()
+module.exports = new Command()
     .name('config')
     .description('dynamically 🪄 generates config files & installs')
     .action(action)

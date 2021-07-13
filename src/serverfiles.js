@@ -4,9 +4,8 @@
  *  Created On 13 July 2021
  */
 
-import { Command } from 'commander'
-
-import cmds from './cmds/index.js'
+const { Command } = require('commander')
+const cmds = require('./cmds/index')
 
 // create a new command line interface
 const program = new Command()
@@ -15,8 +14,12 @@ const program = new Command()
     .option('-V, --verbose', 'show additional 🔬 output')
     .addHelpCommand(true, 'help 📖 for a given command')
 
-// link all commands to the program
-await cmds(program)
+const main = async () => {
+    // link all commands to the program
+    await cmds(program)
 
-// parse the command line arguments
-await program.parseAsync(process.argv)
+    // parse the command line arguments
+    await program.parseAsync(process.argv)
+}
+
+main()

@@ -4,7 +4,7 @@
     "version": "0.0.0",
     "license": "UNLICENSED",
     "bin": "src/serverfiles.js",
-    "type": "module",
+    "type": "commonjs",
     "homepage": "https://github.com/serverfiles/serverfiles#readme",
     "bugs": "https://github.com/serverfiles/serverfiles/issues",
     "author": {
@@ -16,25 +16,23 @@
         "type": "git",
         "url": "https://github.com/serverfiles/serverfiles.git"
     },
-    "scripts": {},
+    "scripts": {
+        "build": "rm -rf bin && pkg --targets latest-linux-x64,latest-macos-x64 --compress gzip --out-path bin package.json"
+    },
     "keywords": [],
     "dependencies": {
         "@vasanthdeveloper/utilities": "^0.1.0",
         "commander": "^8.0.0",
-        "es-dirname": "^0.1.0",
         "glob": "^7.1.7",
         "joi": "^17.4.1",
         "js-yaml": "^4.1.0"
     },
     "devDependencies": {
-        "@babel/core": "^7.14.6",
-        "@babel/eslint-parser": "^7.14.7",
-        "@babel/plugin-syntax-top-level-await": "^7.14.5",
         "@types/js-yaml": "^4.0.2",
         "eslint": "^7.30.0",
         "eslint-config-prettier": "^8.3.0",
         "eslint-plugin-prettier": "^3.4.0",
-        "eslint-plugin-simple-import-sort": "^7.0.0",
+        "pkg": "^5.3.0",
         "prettier": "^2.3.2"
     }
 }
