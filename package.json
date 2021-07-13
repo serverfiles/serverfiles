@@ -1,0 +1,31 @@
+{
+    "name": "serverfiles",
+    "description": "Dynamically write config files to multiple Linux servers.",
+    "version": "0.0.0",
+    "license": "UNLICENSED",
+    "bin": "src/serverfiles.js",
+    "type": "module",
+    "homepage": "https://github.com/serverfiles/serverfiles#readme",
+    "bugs": "https://github.com/serverfiles/serverfiles/issues",
+    "author": {
+        "name": "Vasanth Developer",
+        "email": "vasanth@vasanthdeveloper.com",
+        "url": "https://vasanth.tech"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/serverfiles/serverfiles.git"
+    },
+    "scripts": {},
+    "keywords": [],
+    "devDependencies": {
+        "@babel/core": "^7.14.6",
+        "@babel/eslint-parser": "^7.14.7",
+        "@babel/plugin-syntax-top-level-await": "^7.14.5",
+        "eslint": "^7.30.0",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-prettier": "^3.4.0",
+        "eslint-plugin-simple-import-sort": "^7.0.0",
+        "prettier": "^2.3.2"
+    }
+}
