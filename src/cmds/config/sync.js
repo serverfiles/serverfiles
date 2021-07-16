@@ -3,11 +3,11 @@
  *  Created On 14 July 2021
  */
 
-import utilities from '@vasanthdeveloper/utilities'
+import { promise } from '@vasanthdeveloper/utilities'
 import execa from 'execa'
 import fs from 'fs/promises'
 import mkdirp from 'mkdirp'
-import { basename, join, parse } from 'path'
+import path from 'path'
 
 import getConfig from '../../config/index.js'
 
@@ -16,7 +16,7 @@ const executeCmd = async ({ parents, name, operation, cmd, inheritsPath }) => {
     parents.push(name)
 
     // log a message that we're syncing
-    console.log(`${operation} ${join(...parents)}`)
+    console.log(`${operation} ${path.join(...parents)}`)
     await execa(cmd, {
         cwd: inheritsPath,
         shell: true,
@@ -25,16 +25,16 @@ const executeCmd = async ({ parents, name, operation, cmd, inheritsPath }) => {
 
 const syncRepo = async ({ url, basePath, parents, args }) => {
     // sync the current one
-    let { name } = parse(url)
+    let { name } = path.parse(url)
     if (name.startsWith('serverfiles-'))
         name = name.replace(/serverfiles-/g, '')
 
     // construct the paths
-    const inheritsPath = join(basePath, 'inherits')
-    const repoPath = join(inheritsPath, name)
+    const inheritsPath = path.join(basePath, 'inherits')
+    const repoPath = path.join(inheritsPath, name)
 
     // check if the repo is already cloned
-    const { error } = await utilities.promise.handle(fs.stat(repoPath))
+    const { error } = await promise.handle(fs.stat(repoPath))
 
     // decide the command & log message depending on the error
     const cmd = error ? `git clone ${url} ${name}` : `git pull`
@@ -87,6 +87,6 @@ export default async (config, args) => {
             url,
             args,
             basePath: process.cwd(),
-            parents: [basename(process.cwd())],
+            parents: [path.basename(process.cwd())],
         })
 }

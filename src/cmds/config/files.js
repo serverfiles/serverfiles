@@ -4,7 +4,7 @@
  *  Created On 16 July 2021
  */
 
-import utilities from '@vasanthdeveloper/utilities'
+import { promise } from '@vasanthdeveloper/utilities'
 import fs from 'fs/promises'
 import glob from 'glob'
 import path from 'path'
@@ -36,7 +36,7 @@ export default async args => {
         )
 
         // check if the file exists on the root filesystem
-        const { error } = await utilities.promise.handle(fs.stat(relative))
+        const { error } = await promise.handle(fs.stat(relative))
 
         // if full arg is enabled
         if (args.full) {
