@@ -7,13 +7,14 @@ import fs from 'fs/promises'
 import mkdirp from 'mkdirp'
 import path from 'path'
 
-import { getRelative } from './files.js'
+import { getRelative } from './04-files.js'
+import { executeHook } from './05-hooks.js'
 
-export default async ({ args, config, data, files }) => {
+export default async ({ args, data, files, hooks }) => {
     // loop through each file and render the variables
     for (const file of files) {
         // construct the paths
-        const relative = getRelative(file)
+        const relative = getRelative(file, 'config')
         const dest = path.join(args.dir, ...relative.split(path.sep))
 
         // read the file and ensure dest path exists
@@ -46,5 +47,11 @@ export default async ({ args, config, data, files }) => {
 
         // write the file
         await fs.writeFile(dest, read, 'utf-8')
+
+        // run hooks for this file
+        const promise = executeHook({ args, file, hooks })
+
+        // await for it if requested in args
+        if (args.asyncHooks == false) await promise
     }
 }

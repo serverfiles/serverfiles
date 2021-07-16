@@ -78,6 +78,7 @@ const syncRepo = async ({ url, basePath, parents, args }) => {
 
 export default async (config, args) => {
     // if this is an independent repo, we simply skip
+    if (Boolean(config) == false) return
     if (Boolean(config.inherits) == false) return
 
     // loop through each inherits repo and pull

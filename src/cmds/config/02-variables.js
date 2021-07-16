@@ -33,7 +33,7 @@ export default async config => {
 
     // finally override these variables with the
     // config variables
-    variables = merge(variables, config.variables)
+    variables = merge(variables, config.variables || {})
 
     return variables
 }

@@ -36,5 +36,5 @@ export default async (dir = process.cwd()) => {
     }
 
     // return the config object
-    return config
+    return config || {}
 }

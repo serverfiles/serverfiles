@@ -7,11 +7,12 @@ import { Command } from 'commander'
 import path from 'path'
 
 import getConfig from '../../config/index.js'
-import context from './context.js'
-import getFiles from './files.js'
-import sync from './sync.js'
-import getVariables from './variables.js'
-import write from './write.js'
+import sync from './01-sync.js'
+import getVariables from './02-variables.js'
+import context from './03-context.js'
+import getFiles from './04-files.js'
+import getHooks from './05-hooks.js'
+import write from './06-write.js'
 
 const action = async args => {
     // read the serverfiles.yml file in the current directory
@@ -33,9 +34,13 @@ const action = async args => {
     // overrides from inherited repositories
     const files = await getFiles(args)
 
+    // get a list of all hook files for the picked
+    // config files and execute them later
+    const hooks = await getHooks({ ...args, ...{ full: true } })
+
     // render the file with the variables
     // and write to disk
-    await write({ args, config, data, files })
+    await write({ args, data, files, hooks })
 }
 
 export default new Command()
@@ -44,6 +49,7 @@ export default new Command()
     .action(action)
     .helpOption('-h, --help', 'this message 📖')
     .option('-n, --no-sync', 'do not 🙅‍♂️ sync inherited repositories')
+    .option('-f, --full', 'write all 💯 config files including inherits', false)
     .option(
         '-d, --dir <path>',
         'directory to write 📂 config files to',
@@ -54,4 +60,4 @@ export default new Command()
         'run ⚓️ hooks after writing config files',
         false,
     )
-    .option('-f, --full', 'write all 💯 config files including inherits', false)
+    .option('-a, --async-hooks', 'run hooks ⚡️ asynchronously', false)
