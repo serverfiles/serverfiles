@@ -10,7 +10,7 @@ const config = require('./cmds/config/index')
 // create a new command line interface
 const program = new Command()
     .name('serverfiles')
-    .helpOption('-h, --help', 'this message 🤷‍♂️')
+    .helpOption('-h, --help', 'this message 📖')
     .option('-V, --verbose', 'show additional 🔬 output')
     .addHelpCommand(true, 'help 📖 for a given command')
     .addCommand(config)

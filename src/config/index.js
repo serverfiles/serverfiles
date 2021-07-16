@@ -11,9 +11,9 @@ const path = require('path')
 
 const schema = require('./schema')
 
-module.exports = async () => {
+module.exports = async (dir = process.cwd()) => {
     // attempt to read the serverfiles.yml file
-    const file = path.join(process.cwd(), 'serverfiles.yml')
+    const file = path.join(dir, 'serverfiles.yml')
     let { error, returned: read } = await utilities.promise.handle(
         fs.readFile(file, 'utf8'),
     )
@@ -21,7 +21,7 @@ module.exports = async () => {
     // handle errors
     if (error) {
         console.log('No serverfiles.yml file found in')
-        console.log(process.cwd())
+        console.log(dir)
         process.exit(2) // No serverfiles.yml file found
     }
 

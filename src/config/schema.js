@@ -6,5 +6,6 @@
 const Joi = require('joi')
 
 module.exports = Joi.object({
-    inherit: Joi.string(),
+    inherits: Joi.array().items(Joi.string()),
+    variables: Joi.object(),
 })

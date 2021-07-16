@@ -23,9 +23,12 @@
     "dependencies": {
         "@vasanthdeveloper/utilities": "^0.1.0",
         "commander": "^8.0.0",
+        "deepmerge": "^4.2.2",
+        "execa": "^5.1.1",
         "glob": "^7.1.7",
         "joi": "^17.4.1",
-        "js-yaml": "^4.1.0"
+        "js-yaml": "^4.1.0",
+        "mkdirp": "^1.0.4"
     },
     "devDependencies": {
         "@types/js-yaml": "^4.0.2",
