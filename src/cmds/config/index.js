@@ -3,11 +3,14 @@
  *  Created On 13 July 2021
  */
 
+const path = require('path')
 const { Command } = require('commander')
 
 const getConfig = require('../../config/index')
 const sync = require('./sync')
 const getVariables = require('./variables')
+const getFiles = require('./files')
+const write = require('./write')
 
 const action = async args => {
     // read the serverfiles.yml file in the current directory
@@ -19,7 +22,15 @@ const action = async args => {
 
     // construct a global variables object
     // with overrides and inherits
-    const variables = await getVariables(config)
+    const data = await getVariables(config)
+
+    // get a list of all config files including their
+    // overrides from inherited repositories
+    const files = await getFiles(args)
+
+    // render the file with the variables
+    // and write to disk
+    await write({ args, config, data, files })
 }
 
 module.exports = new Command()
@@ -27,7 +38,15 @@ module.exports = new Command()
     .description('dynamically 🪄 generates config files & installs')
     .action(action)
     .helpOption('-h, --help', 'this message 📖')
-    .option('-d, --dir', 'directory to write 📂 config files to')
-    .option('-r, --run-hooks', 'run ⚓️ hooks after writing config files')
-    .option('-f, --full', 'write all 💯 config files including inherits')
     .option('-n, --no-sync', 'do not 🙅‍♂️ sync inherited repositories')
+    .option(
+        '-d, --dir <path>',
+        'directory to write 📂 config files to',
+        path.join(process.cwd(), 'rendered'),
+    )
+    .option(
+        '-r, --run-hooks',
+        'run ⚓️ hooks after writing config files',
+        false,
+    )
+    .option('-f, --full', 'write all 💯 config files including inherits', false)
