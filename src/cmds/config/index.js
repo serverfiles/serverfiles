@@ -7,6 +7,7 @@ import { Command } from 'commander'
 import path from 'path'
 
 import getConfig from '../../config/index.js'
+import context from './context.js'
 import getFiles from './files.js'
 import sync from './sync.js'
 import getVariables from './variables.js'
@@ -23,6 +24,10 @@ const action = async args => {
     // construct a global variables object
     // with overrides and inherits
     const data = await getVariables(config)
+
+    // read system information and populate
+    // some known context information
+    await context(data)
 
     // get a list of all config files including their
     // overrides from inherited repositories
