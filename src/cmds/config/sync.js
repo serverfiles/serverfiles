@@ -3,19 +3,20 @@
  *  Created On 14 July 2021
  */
 
-const path = require('path')
-const mkdirp = require('mkdirp')
-const execa = require('execa')
-const utilities = require('@vasanthdeveloper/utilities')
-const fs = require('fs/promises')
-const getConfig = require('../../config/index')
+import utilities from '@vasanthdeveloper/utilities'
+import execa from 'execa'
+import fs from 'fs/promises'
+import mkdirp from 'mkdirp'
+import { basename, join, parse } from 'path'
+
+import getConfig from '../../config/index.js'
 
 // actually runs the git command to pull or clone a repo
 const executeCmd = async ({ parents, name, operation, cmd, inheritsPath }) => {
     parents.push(name)
 
     // log a message that we're syncing
-    console.log(`${operation} ${path.join(...parents)}`)
+    console.log(`${operation} ${join(...parents)}`)
     await execa(cmd, {
         cwd: inheritsPath,
         shell: true,
@@ -24,13 +25,13 @@ const executeCmd = async ({ parents, name, operation, cmd, inheritsPath }) => {
 
 const syncRepo = async ({ url, basePath, parents, args }) => {
     // sync the current one
-    let { name } = path.parse(url)
+    let { name } = parse(url)
     if (name.startsWith('serverfiles-'))
         name = name.replace(/serverfiles-/g, '')
 
     // construct the paths
-    const inheritsPath = path.join(basePath, 'inherits')
-    const repoPath = path.join(inheritsPath, name)
+    const inheritsPath = join(basePath, 'inherits')
+    const repoPath = join(inheritsPath, name)
 
     // check if the repo is already cloned
     const { error } = await utilities.promise.handle(fs.stat(repoPath))
@@ -75,7 +76,7 @@ const syncRepo = async ({ url, basePath, parents, args }) => {
     }
 }
 
-module.exports = async (config, args) => {
+export default async (config, args) => {
     // if this is an independent repo, we simply skip
     if (Boolean(config.inherits) == false) return
 
@@ -86,6 +87,6 @@ module.exports = async (config, args) => {
             url,
             args,
             basePath: process.cwd(),
-            parents: [path.basename(process.cwd())],
+            parents: [basename(process.cwd())],
         })
 }

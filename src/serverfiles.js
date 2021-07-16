@@ -4,8 +4,9 @@
  *  Created On 13 July 2021
  */
 
-const { Command } = require('commander')
-const config = require('./cmds/config/index')
+import { Command } from 'commander'
+
+import config from './cmds/config/index.js'
 
 // create a new command line interface
 const program = new Command()

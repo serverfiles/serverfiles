@@ -3,13 +3,13 @@
  *  Created On 15 July 2021
  */
 
-const glob = require('glob')
-const path = require('path')
-const merge = require('deepmerge')
-const fs = require('fs/promises')
-const yaml = require('js-yaml')
+import merge from 'deepmerge'
+import fs from 'fs/promises'
+import glob from 'glob'
+import yaml from 'js-yaml'
+import path from 'path'
 
-module.exports = async config => {
+export default async config => {
     // get all serverfiles.yml files and sort them
     // by picking the deepest file first
     const files = glob

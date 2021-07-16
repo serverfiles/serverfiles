@@ -4,14 +4,14 @@
  *  Created On 13 July 2021
  */
 
-const utilities = require('@vasanthdeveloper/utilities')
-const fs = require('fs/promises')
-const yaml = require('js-yaml')
-const path = require('path')
+import utilities from '@vasanthdeveloper/utilities'
+import fs from 'fs/promises'
+import yaml from 'js-yaml'
+import path from 'path'
 
-const schema = require('./schema')
+import schema from './schema.js'
 
-module.exports = async (dir = process.cwd()) => {
+export default async (dir = process.cwd()) => {
     // attempt to read the serverfiles.yml file
     const file = path.join(dir, 'serverfiles.yml')
     let { error, returned: read } = await utilities.promise.handle(

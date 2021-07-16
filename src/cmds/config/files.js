@@ -4,19 +4,19 @@
  *  Created On 16 July 2021
  */
 
-const path = require('path')
-const glob = require('glob')
-const fs = require('fs/promises')
-const utilities = require('@vasanthdeveloper/utilities')
+import utilities from '@vasanthdeveloper/utilities'
+import fs from 'fs/promises'
+import glob from 'glob'
+import path from 'path'
 
-const getRelative = path => {
+export const getRelative = path => {
     // construct the relative path of the file
     const split = path.split('/config/')
     split.shift()
     return '/' + split.join('/')
 }
 
-module.exports = async args => {
+export default async args => {
     const files = glob.sync(path.join(process.cwd(), '**', 'config', '**'), {
         nodir: true,
     })
@@ -55,5 +55,3 @@ module.exports = async args => {
 
     return returnable
 }
-
-exports.getRelative = getRelative

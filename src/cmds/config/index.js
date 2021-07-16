@@ -3,14 +3,14 @@
  *  Created On 13 July 2021
  */
 
-const path = require('path')
-const { Command } = require('commander')
+import { Command } from 'commander'
+import path from 'path'
 
-const getConfig = require('../../config/index')
-const sync = require('./sync')
-const getVariables = require('./variables')
-const getFiles = require('./files')
-const write = require('./write')
+import getConfig from '../../config/index.js'
+import getFiles from './files.js'
+import sync from './sync.js'
+import getVariables from './variables.js'
+import write from './write.js'
 
 const action = async args => {
     // read the serverfiles.yml file in the current directory
@@ -33,7 +33,7 @@ const action = async args => {
     await write({ args, config, data, files })
 }
 
-module.exports = new Command()
+export default new Command()
     .name('config')
     .description('dynamically 🪄 generates config files & installs')
     .action(action)

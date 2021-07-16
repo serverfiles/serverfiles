@@ -3,4 +3,4 @@
  *  Created On 16 July 2021
  */
 
-module.exports = async ({ args, config, data, files }) => {}
+export default async ({ args, config, data, files }) => {}

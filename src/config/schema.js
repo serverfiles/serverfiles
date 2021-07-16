@@ -3,9 +3,9 @@
  *  Created On 13 July 2021
  */
 
-const Joi = require('joi')
+import Joi from 'joi'
 
-module.exports = Joi.object({
+export default Joi.object({
     inherits: Joi.array().items(Joi.string()),
     variables: Joi.object(),
 })
