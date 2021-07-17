@@ -6,7 +6,7 @@
 
 import { Command } from 'commander'
 
-import config from './cmds/config/index.js'
+import cmds from './cmds.js'
 
 // create a new command line interface
 const program = new Command()
@@ -14,9 +14,11 @@ const program = new Command()
     .helpOption('-h, --help', 'this message 📖')
     .option('-V, --verbose', 'show additional 🔬 output')
     .addHelpCommand(true, 'help 📖 for a given command')
-    .addCommand(config)
 
 const main = async () => {
+    // attach all the commands
+    await cmds(program)
+
     // parse the command line arguments
     await program.parseAsync(process.argv)
 }

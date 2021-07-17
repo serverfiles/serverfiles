@@ -43,6 +43,12 @@ const action = async args => {
     await write({ args, data, files, hooks })
 }
 
+export const prod = cmd =>
+    cmd.option(
+        '-R, --no-rollback',
+        'do not rollback a previous copy 📋 of config if hooks fail',
+    )
+
 export default new Command()
     .name('config')
     .description('dynamically 🪄 generates config files & installs')
