@@ -18,8 +18,8 @@
     },
     "scripts": {
         "clean": "rm -rf bin build",
-        "transpile": "babel src --out-dir build",
-        "compile": "pkg --targets latest-linux-x64,latest-macos-x64 --compress gzip --out-path bin build/serverfiles.js",
+        "transpile": "esbuild --platform=node --bundle --outfile=build/serverfiles.js src/serverfiles.js",
+        "compile": "pkg --no-bytecode --public --targets latest-linux-x64,latest-macos-x64 --public-packages '*' --compress brotli --out-path bin build/serverfiles.js",
         "compile:clean": "rm -rf build",
         "build": "run-s clean transpile compile compile:clean"
     },
@@ -37,18 +37,17 @@
         "systeminformation": "^5.7.7"
     },
     "devDependencies": {
-        "@babel/cli": "^7.14.5",
         "@babel/core": "^7.14.6",
         "@babel/eslint-parser": "^7.14.7",
         "@babel/plugin-syntax-top-level-await": "^7.14.5",
-        "@babel/preset-env": "^7.14.7",
         "@types/js-yaml": "^4.0.2",
+        "esbuild": "*",
         "eslint": "^7.30.0",
         "eslint-config-prettier": "^8.3.0",
         "eslint-plugin-prettier": "^3.4.0",
         "eslint-plugin-simple-import-sort": "^7.0.0",
-        "npm-run-all": "^4.1.5",
-        "pkg": "^5.3.0",
+        "npm-run-all": "*",
+        "pkg": "*",
         "prettier": "^2.3.2"
     }
 }
