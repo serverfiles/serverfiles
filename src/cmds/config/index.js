@@ -13,6 +13,7 @@ import context from './03-context.js'
 import getFiles from './04-files.js'
 import getHooks from './05-hooks.js'
 import write from './06-write.js'
+import logVariables from './variables.js'
 
 const action = async args => {
     // read the serverfiles.yml file in the current directory
@@ -29,6 +30,10 @@ const action = async args => {
     // read system information and populate
     // some known context information
     await context(data)
+
+    // log all the variables loaded into context
+    // which helpful to debug if a variable is not found
+    await logVariables(args, data)
 
     // get a list of all config files including their
     // overrides from inherited repositories
@@ -54,6 +59,7 @@ export default new Command()
     .description('dynamically 🪄 generates config files & installs')
     .action(action)
     .helpOption('-h, --help', 'this message 📖')
+    .option('-l, --log-variables', 'print a table 📋 of variables & exit')
     .option('-n, --no-sync', 'do not 🙅‍♂️ sync inherited repositories')
     .option('-f, --full', 'write all 💯 config files including inherits', false)
     .option(
