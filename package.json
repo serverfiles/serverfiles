@@ -1,6 +1,6 @@
 {
     "name": "serverfiles",
-    "description": "Dynamically write config files to multiple Linux servers.",
+    "description": "Dynamically write ⚗️ config files to multiple 🐧 Linux servers.",
     "version": "0.0.0",
     "license": "UNLICENSED",
     "bin": "src/serverfiles.js",

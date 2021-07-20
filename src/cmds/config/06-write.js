@@ -4,6 +4,7 @@
  */
 
 import { promise } from '@vasanthdeveloper/utilities'
+import execa from 'execa'
 import fs from 'fs'
 import mkdirp from 'mkdirp'
 import path from 'path'
@@ -11,40 +12,56 @@ import path from 'path'
 import { getRelative } from './04-files.js'
 import { executeHook } from './05-hooks.js'
 
-export const restoreBackup = async (file, backup) => {
+export const cleanBackup = async ({ file, backup, restore = true }) => {
     // copy the file back
-    await fs.promises.copyFile(backup, file)
+    if (restore) await fs.promises.copyFile(backup, file)
 
-    // delete our backup
-    await fs.promises.unlink(backup)
+    // delete our backup, use sudo if required
+    // to delete the backup file
+    const { error: noWrite } = await promise.handle(
+        fs.promises.access(backup, fs.constants.W_OK),
+    )
+    if (noWrite) {
+        await execa(`sudo rm "${backup}"`, {
+            shell: true,
+        })
+    } else {
+        await fs.promises.unlink(backup)
+    }
 }
 
-const writeFile = async (file, content, relative) => {
-    // check if the file already exists
-    const { error: exists } = await promise.handle(fs.promises.stat(file))
-
-    // check if the file has write perms
-    // if not throw an error
-    if (Boolean(exists) == false) {
-        const { error: noAccess } = await promise.handle(
-            fs.promises.access(file, fs.constants.W_OK),
-        )
-        if (noAccess) {
-            // code 5: elevated privileges required
-            console.log(
-                `Elevated privileges required to write to 👇 please use sudo\n${file}`,
-            )
-            process.exit(5)
-        }
-    }
+const writeFile = async ({ args, file, content, relative }) => {
+    // check if the file is readable if not, simply
+    // throw an error
+    // code 5: config file not readable
+    const { error: noRead } = await promise.handle(
+        fs.promises.access(file, fs.constants.R_OK),
+    )
+    if (noRead) return console.log(`Could not read ${file} skipping it`)
 
     // take a backup of the original file
     const { dir, base } = path.parse(file)
     const backup = path.join(dir, `${base}.serverfiles.backup`)
-    await fs.promises.copyFile(relative, backup)
 
-    // write the file
-    await fs.promises.writeFile(file, content, 'utf-8')
+    // check if we have write permission, if we have
+    // write using the current user, else elevate to sudo
+    // and use bash to execute copy operation
+    const { error: noWrite } = await promise.handle(
+        fs.promises.access(file, fs.constants.W_OK),
+    )
+    if (noWrite) {
+        if (args.full == false)
+            await execa(`sudo cp "${relative}" "${backup}"`, {
+                shell: true,
+            })
+        const operation = execa(`sudo tee "${file}"`, { shell: true })
+        operation.stdin.write(content)
+        operation.stdin.end()
+        await operation
+    } else {
+        if (args.full == false) await fs.promises.copyFile(relative, backup)
+        await fs.promises.writeFile(file, content, 'utf-8')
+    }
 
     return backup
 }
@@ -85,12 +102,24 @@ export default async ({ args, data, files, hooks }) => {
         }
 
         // write the file
-        const backup = await writeFile(dest, read, relative)
+        const backup = await writeFile({
+            args,
+            relative,
+            file: dest,
+            content: read,
+        })
 
         // run hooks for this file
         const hook = executeHook({ args, file, dest, hooks, backup })
 
         // await for it if requested in args
         if (args.asyncHooks == false) await promise.handle(hook)
+
+        // clean up the backup file we've made
+        await cleanBackup({
+            backup,
+            file: dest,
+            restore: false,
+        })
     }
 }

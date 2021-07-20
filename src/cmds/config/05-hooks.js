@@ -10,7 +10,7 @@ import path from 'path'
 
 import { getFiles } from './04-files.js'
 import { getRelative } from './04-files.js'
-import { restoreBackup } from './06-write.js'
+import { cleanBackup } from './06-write.js'
 
 // executeHook runs a hook file it's config
 // file is passed
@@ -48,27 +48,34 @@ export const executeHook = async ({
 
     // handle the errors
     if (error) {
-        if (fatal == false) {
-            console.log(`Failed to run ${path.basename(file)} hooks`)
-            console.log('Reverting to previous working config')
-            await restoreBackup(dest, backup)
+        if (args.full == false) {
+            if (fatal == false) {
+                console.log(`Failed to run ${path.basename(file)} hooks`)
 
-            // re-run the hooks once more
-            await executeHook({
-                args,
-                backup,
-                file,
-                dest,
-                hooks,
-                fatal: true,
-            })
-        } else {
-            // todo: show a fatal warning and exit the process
-            console.log(
-                'the process failed even after reverting to an older config',
-            )
-            // code 6: failed to restart the service
-            process.exit(6)
+                console.log('Reverting to previous working config')
+                await cleanBackup({
+                    file: dest,
+                    backup,
+                })
+
+                // re-run the hooks once more
+                return await executeHook({
+                    args,
+                    backup,
+                    file,
+                    dest,
+                    hooks,
+                    fatal: true,
+                })
+            } else {
+                // todo: show a fatal warning and exit the process
+                console.log(
+                    'the process failed even after reverting to an older config',
+                )
+
+                // code 6: failed to restart the service
+                process.exit(6)
+            }
         }
     }
 }
