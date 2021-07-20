@@ -4,64 +4,36 @@
  */
 
 import { promise } from '@vasanthdeveloper/utilities'
-import execa from 'execa'
-import fs from 'fs'
 import mkdirp from 'mkdirp'
 import path from 'path'
 
+import fs from '../../utilities/fs.js'
 import { getRelative } from './04-files.js'
 import { executeHook } from './05-hooks.js'
 
 export const cleanBackup = async ({ file, backup, restore = true }) => {
     // copy the file back
-    if (restore) await fs.promises.copyFile(backup, file)
+    if (restore) await fs.copy(backup, file)
 
-    // delete our backup, use sudo if required
-    // to delete the backup file
-    const { error: noWrite } = await promise.handle(
-        fs.promises.access(backup, fs.constants.W_OK),
-    )
-    if (noWrite) {
-        await execa(`sudo rm "${backup}"`, {
-            shell: true,
-        })
-    } else {
-        await fs.promises.unlink(backup)
-    }
+    // delete our backup file that we created
+    await fs.del(backup)
 }
 
 const writeFile = async ({ args, file, content, relative }) => {
     // check if the file is readable if not, simply
     // throw an error
-    // code 5: config file not readable
-    const { error: noRead } = await promise.handle(
-        fs.promises.access(file, fs.constants.R_OK),
-    )
-    if (noRead) return console.log(`Could not read ${file} skipping it`)
+    if (await fs.isReadable(file))
+        return console.log(`Could not read ${file} skipping it`)
 
-    // take a backup of the original file
+    // construct the backup file path
     const { dir, base } = path.parse(file)
     const backup = path.join(dir, `${base}.serverfiles.backup`)
 
-    // check if we have write permission, if we have
-    // write using the current user, else elevate to sudo
-    // and use bash to execute copy operation
-    const { error: noWrite } = await promise.handle(
-        fs.promises.access(file, fs.constants.W_OK),
-    )
-    if (noWrite) {
-        if (args.full == false)
-            await execa(`sudo cp "${relative}" "${backup}"`, {
-                shell: true,
-            })
-        const operation = execa(`sudo tee "${file}"`, { shell: true })
-        operation.stdin.write(content)
-        operation.stdin.end()
-        await operation
-    } else {
-        if (args.full == false) await fs.promises.copyFile(relative, backup)
-        await fs.promises.writeFile(file, content, 'utf-8')
-    }
+    // take a backup of the original file
+    if (args.full == false) await fs.copy(relative, backup)
+
+    // write the rendered config file
+    await fs.write(file, content)
 
     return backup
 }

@@ -22,8 +22,10 @@ export default async config => {
     // loop over all serverfiles.yml files and
     // merge the variables from all of them
     for (const file of files) {
-        const read = await fs.readFile(file, 'utf-8')
-        const parsed = await yaml.load(read)
+        // read and parse YAML file
+        const parsed = await yaml.load(await fs.readFile(file, 'utf-8'))
+
+        // conditions where we should skip to next one
         if (Boolean(parsed) == false) continue
         if (Boolean(parsed.variables) == false) continue
 

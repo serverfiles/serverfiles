@@ -5,13 +5,6 @@
 
 import Table from 'cli-table'
 
-const excluded = ['SERVER_CPU_FLAGS', 'SERVER_CPU_CACHE']
-
-const excludeKeys = data => {
-    for (const key of excluded) delete data[key]
-    return data
-}
-
 export default async (args, data) => {
     // simply skip if the flags weren't provided
     if (Boolean(args.logVariables) == false) return
@@ -23,11 +16,6 @@ export default async (args, data) => {
             obj[key] = data[key]
             return obj
         }, {})
-
-    // delete a few which are either
-    // insecure to print, or cause
-    // formatting problems
-    data = excludeKeys(data)
 
     // create a new table
     const table = new Table({
