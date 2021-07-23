@@ -22,7 +22,10 @@ const add = ({ data, namespace, obj }) => {
     }
 }
 
-export default async data => {
+export default async (data, spinner) => {
+    // log the status to the spinner
+    spinner.text = 'Constructing context'
+
     // get in system information
     const os = await si.osInfo()
     const cpu = await si.cpu()

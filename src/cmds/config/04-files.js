@@ -18,7 +18,9 @@ export const getRelative = (file, dir) => {
 
 export const getFiles =
     ({ dir, fileType }) =>
-    async args => {
+    async (args, spinner) => {
+        spinner.text = 'Estimating execution'
+
         // grab all config files using globs
         const files = glob.sync(
             path.join(process.cwd(), '**', dir, '**', fileType),

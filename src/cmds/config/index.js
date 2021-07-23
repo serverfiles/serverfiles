@@ -4,9 +4,11 @@
  */
 
 import { Command } from 'commander'
+import ora from 'ora'
 import path from 'path'
 
 import getConfig from '../../config/index.js'
+import { logger } from '../../logger.js'
 import sync from './01-sync.js'
 import getVariables from './02-variables.js'
 import context from './03-context.js'
@@ -15,37 +17,52 @@ import getHooks from './05-hooks.js'
 import write from './06-write.js'
 import logVariables from './variables.js'
 
-const action = async args => {
+const action = async (args, cmd) => {
+    // pull global args
+    args = { ...args, ...cmd.parent.opts() }
+
+    // create an ora spinner
+    const spinner = ora({
+        color: 'yellow',
+        text: 'Reading serverfiles.yml file',
+        hideCursor: true,
+        isSilent: args.quiet,
+    }).start()
+
     // read the serverfiles.yml file in the current directory
-    const config = await getConfig()
+    const config = await getConfig({ spinner })
 
     // do "git clone" or "git pull" on the
     // inherited repositories
-    await sync(config, args)
+    await sync({ config, args, spinner })
 
     // construct a global variables object
     // with overrides and inherits
-    const data = await getVariables(config)
+    const data = await getVariables(config, spinner)
 
     // read system information and populate
     // some known context information
-    await context(data)
+    await context(data, spinner)
 
-    // log all the variables loaded into context
-    // which helpful to debug if a variable is not found
-    await logVariables(args, data)
+    // // log all the variables loaded into context
+    // // which helpful to debug if a variable is not found
+    await logVariables(args, data, spinner)
 
     // get a list of all config files including their
     // overrides from inherited repositories
-    const files = await getFiles(args)
+    const files = await getFiles(args, spinner)
 
     // get a list of all hook files for the picked
     // config files and execute them later
-    const hooks = await getHooks({ ...args, ...{ full: true } })
+    const hooks = await getHooks({ ...args, ...{ full: true } }, spinner)
 
     // render the file with the variables
     // and write to disk
-    await write({ args, data, files, hooks })
+    await write({ args, data, files, hooks, spinner })
+
+    // tell the user we have completed writing
+    spinner.stop()
+    logger.success('Finished writing configuration files')
 }
 
 export default new Command()

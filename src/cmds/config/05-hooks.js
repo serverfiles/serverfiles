@@ -20,11 +20,14 @@ export const executeHook = async ({
     dest,
     hooks,
     backup,
+    spinner,
     fatal = false,
 }) => {
     // skip this function if runHooks flag was
     // not provided
     if (args.runHooks == false) return
+
+    spinner.text = `Executing hooks for ${path.basename(file)}`
 
     // construct the relative path
     const relativeConfig = getRelative(file, 'config')

@@ -4,41 +4,41 @@
  */
 
 import { promise } from '@vasanthdeveloper/utilities'
+import chalk from 'chalk'
+import fs from 'fs/promises'
 import mkdirp from 'mkdirp'
 import path from 'path'
 
-import fs from '../../utilities/fs.js'
+import { logger } from '../../logger.js'
+import fsUtility from '../../utilities/fs.js'
 import { getRelative } from './04-files.js'
 import { executeHook } from './05-hooks.js'
 
 export const cleanBackup = async ({ file, backup, restore = true }) => {
     // copy the file back
-    if (restore) await fs.copy(backup, file)
+    if (restore) await fsUtility.copy(backup, file)
 
     // delete our backup file that we created
-    await fs.del(backup)
+    await fsUtility.del(backup)
 }
 
-const writeFile = async ({ args, file, content, relative }) => {
-    // check if the file is readable if not, simply
-    // throw an error
-    if (await fs.isReadable(file))
-        return console.log(`Could not read ${file} skipping it`)
+const writeFile = async ({ args, file, content, relative, spinner }) => {
+    spinner.text = `Writing ${file}`
 
     // construct the backup file path
     const { dir, base } = path.parse(file)
     const backup = path.join(dir, `${base}.serverfiles.backup`)
 
     // take a backup of the original file
-    if (args.full == false) await fs.copy(relative, backup)
+    if (args.full == false) await fsUtility.copy(relative, backup)
 
     // write the rendered config file
-    await fs.write(file, content)
+    await fsUtility.write(file, content)
 
     return backup
 }
 
-export default async ({ args, data, files, hooks }) => {
+export default async ({ args, data, files, hooks, spinner }) => {
     // loop through each file and render the variables
     for (const file of files) {
         // construct the paths
@@ -46,7 +46,7 @@ export default async ({ args, data, files, hooks }) => {
         const dest = path.join(args.dir, ...relative.split(path.sep))
 
         // read the file and ensure dest path exists
-        let read = await fs.promises.readFile(file, 'utf8')
+        let read = await fs.readFile(file, 'utf8')
         await mkdirp(path.dirname(dest))
 
         // get a list of all variables used
@@ -64,9 +64,15 @@ export default async ({ args, data, files, hooks }) => {
 
             // if the variable is undefined
             if (value == undefined) {
-                throw new Error(
-                    `Variable ${varName} not defined used in ${file}`,
+                // code 4: Undefined variable used
+                spinner.stop()
+                logger.error(
+                    `Undefined variable "${varName}" used in file 👇\n${chalk.gray(
+                        path.relative(process.cwd(), file),
+                    )}`,
+                    4,
                 )
+                process.exit(4)
             } else {
                 // replace the variable with the value
                 read = read.replace(`{${varName}}`, value)
@@ -76,13 +82,14 @@ export default async ({ args, data, files, hooks }) => {
         // write the file
         const backup = await writeFile({
             args,
+            spinner,
             relative,
             file: dest,
             content: read,
         })
 
         // run hooks for this file
-        const hook = executeHook({ args, file, dest, hooks, backup })
+        const hook = executeHook({ args, file, dest, hooks, backup, spinner })
 
         // await for it if requested in args
         if (args.asyncHooks == false) await promise.handle(hook)

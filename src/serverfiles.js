@@ -7,15 +7,20 @@
 import { Command } from 'commander'
 
 import cmds from './cmds.js'
+import logger from './logger.js'
 
 // create a new command line interface
 const program = new Command()
     .name('serverfiles')
     .helpOption('-h, --help', 'this message 📖')
     .option('-V, --verbose', 'show additional 🔬 output')
+    .option('-q, --quiet', 'do not 🙅‍♂️ show any output')
     .addHelpCommand(true, 'help 📖 for a given command')
 
 const main = async () => {
+    // initialize the logger
+    await logger()
+
     // attach all the commands
     await cmds(program)
 

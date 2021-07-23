@@ -5,13 +5,15 @@
  */
 
 import { promise } from '@vasanthdeveloper/utilities'
+import chalk from 'chalk'
 import fs from 'fs/promises'
 import yaml from 'js-yaml'
 import path from 'path'
 
+import { logger } from '../logger.js'
 import schema from './schema.js'
 
-export default async (dir = process.cwd()) => {
+export default async ({ dir = process.cwd(), spinner }) => {
     // attempt to read the serverfiles.yml file
     const file = path.join(dir, 'serverfiles.yml')
     let { error, returned: read } = await promise.handle(
@@ -20,10 +22,12 @@ export default async (dir = process.cwd()) => {
 
     // handle errors
     if (error) {
-        console.log('No serverfiles.yml file found in')
-        console.log(dir)
         // code 2: No serverfiles.yml file found in the current directory
-        process.exit(2)
+        spinner.stop()
+        logger.error(
+            `Cannot a find serverfiles.yml file in 👇\n${chalk.gray(dir)}`,
+            2,
+        )
     }
 
     // parse the yaml file
@@ -32,9 +36,9 @@ export default async (dir = process.cwd()) => {
     // validate the config file
     error = (await promise.handle(schema.validateAsync(config))).error
     if (error) {
-        console.log(`Invalid property ${error.message} in serverfiles.yml`)
         // code 3: Invalid property in serverfiles.yml
-        process.exit(3)
+        spinner.stop()
+        logger.error(`Invalid property ${error.message} in serverfiles.yml`, 3)
     }
 
     // return the config object
