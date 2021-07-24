@@ -4,28 +4,24 @@
  */
 
 import { promise } from '@vasanthdeveloper/utilities'
+import chalk from 'chalk'
 import execa from 'execa'
 import fs from 'fs/promises'
 import mkdirp from 'mkdirp'
 import path from 'path'
 
 import getConfig from '../../config/index.js'
+import { logger } from '../../logger.js'
 
 // actually runs the git command to pull or clone a repo
-const executeCmd = async ({
-    parents,
-    name,
-    operation,
-    cmd,
-    inheritsPath,
-    spinner,
-}) => {
+const executeCmd = async ({ parents, name, operation, cmd, cwd, spinner }) => {
     parents.push(name)
 
     // log a message that we're syncing
     spinner.text = `${operation} ${path.join(...parents)}`
+    logger.verbose(`Running ${chalk.gray(cmd)} in 👇\n${chalk.gray.dim(cwd)}`)
     await execa(cmd, {
-        cwd: inheritsPath,
+        cwd: cwd,
         shell: true,
     })
 }
@@ -58,7 +54,7 @@ const syncRepo = async ({ url, basePath, parents, args, spinner }) => {
             parents,
             spinner,
             operation,
-            inheritsPath,
+            cwd: error ? inheritsPath : repoPath,
         })
     } else {
         if (error)
@@ -68,7 +64,7 @@ const syncRepo = async ({ url, basePath, parents, args, spinner }) => {
                 parents,
                 spinner,
                 operation,
-                inheritsPath,
+                cwd: error ? inheritsPath : repoPath,
             })
     }
 

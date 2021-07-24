@@ -26,7 +26,7 @@ const action = async (args, cmd) => {
         color: 'yellow',
         text: 'Reading serverfiles.yml file',
         hideCursor: true,
-        isSilent: args.quiet,
+        isSilent: args.quiet || args.verbose,
     }).start()
 
     // read the serverfiles.yml file in the current directory
@@ -35,6 +35,10 @@ const action = async (args, cmd) => {
     // do "git clone" or "git pull" on the
     // inherited repositories
     await sync({ config, args, spinner })
+
+    spinner.stop()
+    console.log('exiting')
+    process.exit(0)
 
     // construct a global variables object
     // with overrides and inherits
