@@ -9,12 +9,11 @@ import fs from 'fs/promises'
 import mkdirp from 'mkdirp'
 import path from 'path'
 
-import { logger } from '../../logger.js'
 import fsUtility from '../../utilities/fs.js'
 import { getRelative } from './04-files.js'
 import { executeHook } from './05-hooks.js'
 
-export const cleanBackup = async ({ file, backup, restore = true }) => {
+export const cleanBackup = async ({ backup, file, restore = true }) => {
     // copy the file back
     if (restore) await fsUtility.copy(backup, file)
 
@@ -22,8 +21,8 @@ export const cleanBackup = async ({ file, backup, restore = true }) => {
     await fsUtility.del(backup)
 }
 
-const writeFile = async ({ args, file, content, relative, spinner }) => {
-    spinner.text = `Writing ${file}`
+const writeFile = async ({ args, content, file, log, relative }) => {
+    log.log(`Writing ${file}`)
 
     // construct the backup file path
     const { dir, base } = path.parse(file)
@@ -38,7 +37,7 @@ const writeFile = async ({ args, file, content, relative, spinner }) => {
     return backup
 }
 
-export default async ({ args, data, files, hooks, spinner }) => {
+export default async ({ args, data, files, hooks, log }) => {
     // loop through each file and render the variables
     for (const file of files) {
         // construct the paths
@@ -65,14 +64,12 @@ export default async ({ args, data, files, hooks, spinner }) => {
             // if the variable is undefined
             if (value == undefined) {
                 // code 4: Undefined variable used
-                spinner.stop()
-                logger.error(
+                log.error(
                     `Undefined variable "${varName}" used in file 👇\n${chalk.gray(
                         path.relative(process.cwd(), file),
                     )}`,
                     4,
                 )
-                process.exit(4)
             } else {
                 // replace the variable with the value
                 read = read.replace(`{${varName}}`, value)
@@ -81,15 +78,15 @@ export default async ({ args, data, files, hooks, spinner }) => {
 
         // write the file
         const backup = await writeFile({
+            log,
             args,
-            spinner,
             relative,
             file: dest,
             content: read,
         })
 
         // run hooks for this file
-        const hook = executeHook({ args, file, dest, hooks, backup, spinner })
+        const hook = executeHook({ args, backup, dest, file, hooks, log })
 
         // await for it if requested in args
         if (args.asyncHooks == false) await promise.handle(hook)

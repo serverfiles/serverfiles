@@ -9,9 +9,9 @@ import glob from 'glob'
 import yaml from 'js-yaml'
 import path from 'path'
 
-export default async (config, spinner) => {
-    // setting spinner text
-    spinner.text = 'Constructing variables'
+export default async ({ config, log }) => {
+    // update the user on what we're doing
+    log.log('Constructing variables')
 
     // get all serverfiles.yml files and sort them
     // by picking the deepest file first

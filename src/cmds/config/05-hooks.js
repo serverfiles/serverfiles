@@ -15,19 +15,19 @@ import { cleanBackup } from './06-write.js'
 // executeHook runs a hook file it's config
 // file is passed
 export const executeHook = async ({
+    log,
     args,
     file,
     dest,
     hooks,
     backup,
-    spinner,
     fatal = false,
 }) => {
     // skip this function if runHooks flag was
     // not provided
     if (args.runHooks == false) return
 
-    spinner.text = `Executing hooks for ${path.basename(file)}`
+    log.log(`Executing hooks for ${path.basename(file)}`)
 
     // construct the relative path
     const relativeConfig = getRelative(file, 'config')
@@ -86,4 +86,5 @@ export const executeHook = async ({
 export default getFiles({
     dir: 'hooks',
     fileType: '*.bash',
+    operationLog: 'Estimating hooks to be executed',
 })

@@ -5,12 +5,12 @@
 
 import Table from 'cli-table'
 
-export default async (args, data, spinner) => {
+export default async ({ args, data, log }) => {
     // simply skip if the flags weren't provided
     if (Boolean(args.logVariables) == false) return
 
     // stop the spinner
-    spinner.stop()
+    log.spinner.stop()
 
     // sort keys in data
     data = Object.keys(data)

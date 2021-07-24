@@ -25,9 +25,9 @@ const add = ({ data, namespace, obj }) => {
     Object.fromEntries(Object.entries(data).sort())
 }
 
-export default async (data, spinner) => {
-    // log the status to the spinner
-    spinner.text = 'Constructing context'
+export default async ({ data, log }) => {
+    // log the status
+    log.log('Constructing context')
 
     // get in system information
     const os = await si.osInfo()

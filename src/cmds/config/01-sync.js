@@ -14,11 +14,11 @@ import getConfig from '../../config/index.js'
 import { logger } from '../../logger.js'
 
 // actually runs the git command to pull or clone a repo
-const executeCmd = async ({ parents, name, operation, cmd, cwd, spinner }) => {
+const executeCmd = async ({ cmd, cwd, log, name, operation, parents }) => {
     parents.push(name)
 
     // log a message that we're syncing
-    spinner.text = `${operation} ${path.join(...parents)}`
+    log.log(`${operation} ${path.join(...parents)}`)
     logger.verbose(`Running ${chalk.gray(cmd)} in 👇\n${chalk.gray.dim(cwd)}`)
     await execa(cmd, {
         cwd: cwd,
@@ -26,7 +26,7 @@ const executeCmd = async ({ parents, name, operation, cmd, cwd, spinner }) => {
     })
 }
 
-const syncRepo = async ({ url, basePath, parents, args, spinner }) => {
+const syncRepo = async ({ args, basePath, log, parents, url }) => {
     // sync the current one
     let { name } = path.parse(url)
     if (name.startsWith('serverfiles-'))
@@ -50,9 +50,9 @@ const syncRepo = async ({ url, basePath, parents, args, spinner }) => {
     if (args.sync == true) {
         await executeCmd({
             cmd,
+            log,
             name,
             parents,
-            spinner,
             operation,
             cwd: error ? inheritsPath : repoPath,
         })
@@ -60,9 +60,9 @@ const syncRepo = async ({ url, basePath, parents, args, spinner }) => {
         if (error)
             await executeCmd({
                 cmd,
+                log,
                 name,
                 parents,
-                spinner,
                 operation,
                 cwd: error ? inheritsPath : repoPath,
             })
@@ -71,19 +71,19 @@ const syncRepo = async ({ url, basePath, parents, args, spinner }) => {
     // now that we know this repo is updated
     // go into another repo and sync the inherits
     const config = await getConfig({
+        log,
         dir: repoPath,
-        spinner,
     })
 
     // recursively call itself for each inherits
     if (Boolean(config) == false) return
     if (config.inherits) {
         for (const url of config.inherits)
-            await syncRepo({ url, args, parents, spinner, basePath: repoPath })
+            await syncRepo({ args, log, parents, url, basePath: repoPath })
     }
 }
 
-export default async ({ config, args, spinner }) => {
+export default async ({ args, config, log }) => {
     // if this is an independent repo, we simply skip
     if (Boolean(config) == false) return
     if (Boolean(config.inherits) == false) return
@@ -94,7 +94,7 @@ export default async ({ config, args, spinner }) => {
         await syncRepo({
             url,
             args,
-            spinner,
+            log,
             basePath: process.cwd(),
             parents: [path.basename(process.cwd())],
         })
