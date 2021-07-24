@@ -5,7 +5,7 @@
 
 import si from 'systeminformation'
 
-const excluded = ['SERVER_CPU_FLAGS', 'SERVER_CPU_CACHE']
+const excluded = ['SERVER_CPU_FLAGS', 'SERVER_CPU_CACHE', 'ENV_PATH']
 
 // add() will add the given object
 // and a namespace into our data
@@ -20,6 +20,9 @@ const add = ({ data, namespace, obj }) => {
         // only if it's not excluded, add it to our data
         if (excluded.includes(name) == false) data[name] = obj[key]
     }
+
+    // sort the keys alphabetically
+    Object.fromEntries(Object.entries(data).sort())
 }
 
 export default async (data, spinner) => {
@@ -37,4 +40,5 @@ export default async (data, spinner) => {
     add({ data, namespace: 'SERVER_CPU', obj: cpu })
     add({ data, namespace: 'SERVER_RAM', obj: ram })
     add({ data, namespace: 'SERVER_SYSTEM', obj: sys })
+    add({ data, namespace: 'ENV', obj: process.env })
 }
