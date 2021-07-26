@@ -12,7 +12,7 @@ import path from 'path'
 
 const modSchema = Joi.object({
     name: Joi.string(),
-    path: Joi.string().required(),
+    dest: Joi.string().required(),
     content: Joi.string().required(),
     executables: Joi.array().items(Joi.string()),
     file: Joi.string().required(),

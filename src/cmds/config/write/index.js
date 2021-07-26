@@ -10,7 +10,7 @@ import fsUtility from '../../../utilities/fs.js'
 import getFiles from './01-files.js'
 import parseFiles from './02-parse.js'
 import filterModules from './03-filter.js'
-import { backup } from './04-backup.js'
+import { backup, restore } from './04-backup.js'
 import runHook from './05-hook.js'
 
 export default async ({ args, data, log }) => {
@@ -28,17 +28,20 @@ export default async ({ args, data, log }) => {
 
     // loop through each module
     for (const mod of modules) {
-        // 1. take a backup of the config file we're writing
+        // 1. make the dest path absolute
+        mod.dest = path.join(args.dir, mod.dest)
+
+        // 2. take a backup of the config file we're writing
         await backup(args, mod)
 
-        // 2. write the rendered config file
-        mod.path = path.join(args.dir, mod.path)
-        await fsUtility.write(mod.path, mod.content)
+        // 3. write the rendered config file
+        await fsUtility.write(mod)
 
-        // 3. run the hook file
-        await runHook(args, mod)
+        // 4. run the hook file
+        const status = await runHook(args, mod)
 
-        // 4. if hook, successfully runs, we clear the back up
-        // 5. else we restore the backup and re-run the hooks
+        // 5. if hook, successfully runs, we clear the back up
+        // else we restore the backup and re-run the hooks
+        await restore(mod, status)
     }
 }

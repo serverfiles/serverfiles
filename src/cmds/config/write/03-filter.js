@@ -50,7 +50,7 @@ const checkExecutables = async ({ executables }) => {
 
 export default async ({ args, modules }) => {
     // simply skip this function if "-f, --full" is provided
-    if (args.full) return
+    if (args.full) return modules
 
     const returnable = []
 
@@ -60,7 +60,7 @@ export default async ({ args, modules }) => {
         if (
             ['executables'].some(key => Object.keys(mod).includes(key)) == false
         )
-            return
+            continue
 
         // handle executable field
         if ((await checkExecutables(mod)) == false) return
