@@ -7,6 +7,8 @@
 import { promise } from '@vasanthdeveloper/utilities'
 import execa from 'execa'
 import fs from 'fs'
+import mkdirp from 'mkdirp'
+import path from 'path'
 
 const { R_OK } = fs.constants
 const { access, copyFile, writeFile } = fs.promises
@@ -14,6 +16,7 @@ const { access, copyFile, writeFile } = fs.promises
 // attempts to write a file using the current
 // thread and falls back to using root privileges
 const write = async (file, content) => {
+    await mkdirp(path.dirname(file))
     const { error } = await promise.handle(writeFile(file, content, 'utf-8'))
 
     if (error) {
