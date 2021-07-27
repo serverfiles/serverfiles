@@ -8,6 +8,8 @@
 import { promise } from '@vasanthdeveloper/utilities'
 import execa from 'execa'
 
+import { logger } from '../../../logger.js'
+
 // first checks if the given executable is installed
 // using the which command, if not found we also try
 // using sudo because some executables are only visible
@@ -52,6 +54,7 @@ export default async ({ args, modules }) => {
     // simply skip this function if "-f, --full" is provided
     if (args.full) return modules
 
+    logger.verbose('Filtering loaded modules')
     const returnable = []
 
     // loop through each module

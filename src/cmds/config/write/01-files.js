@@ -7,6 +7,8 @@
 import glob from 'glob'
 import path from 'path'
 
+import { logger } from '../../../logger.js'
+
 // uses glob to get all hbs templates and
 // bash hook files and returns them sorted
 const getFiles = () =>
@@ -34,6 +36,7 @@ const getRelative = hbs => {
 }
 
 const filterOverrides = files => {
+    logger.verbose('Filtering modules to be written')
     const returnable = []
 
     // loop through all handlebars files and
@@ -58,6 +61,7 @@ const filterOverrides = files => {
 }
 
 const formatFiles = files => {
+    logger.verbose('Binding files with hooks')
     const returnable = []
 
     // filter all hbs files and
@@ -80,7 +84,9 @@ const formatFiles = files => {
     return returnable
 }
 
-export default async () => {
+export default async log => {
+    log.log('Estimating execution')
+
     // get all module files from this repository
     // and then inherits including both bash scripts
     // and handlebar templates

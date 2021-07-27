@@ -4,8 +4,10 @@
  */
 
 import { promise } from '@vasanthdeveloper/utilities'
+import chalk from 'chalk'
 import fs from 'fs/promises'
 
+import { logger } from '../../../logger.js'
 import fsUtility from '../../../utilities/fs.js'
 
 export const backup = async ({ dir }, { hook, dest, sudo }) => {
@@ -15,6 +17,7 @@ export const backup = async ({ dir }, { hook, dest, sudo }) => {
     if (dir != '/') return
     if (Boolean(hook) == false) return
 
+    logger.verbose(`Backing up ${chalk.gray(`${dest}.serverfiles.backup`)}`)
     await fsUtility.copy({
         sudo,
         src: dest,
@@ -37,6 +40,7 @@ export const restore = async ({ dest, sudo }, restore) => {
         })
 
     // clean up the backup file
+    logger.verbose(`Cleaning up ${chalk.gray(`${dest}.serverfiles.backup`)}`)
     await fsUtility.del({
         sudo,
         file: backUpPath,

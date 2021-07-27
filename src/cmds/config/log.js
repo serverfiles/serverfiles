@@ -19,6 +19,10 @@ export default ({ quiet, verbose }) => {
     return {
         spinner,
         log: msg => (verbose ? logger.info(msg) : (spinner.text = msg)),
+        warn: msg => {
+            spinner.clear()
+            logger.warning(msg)
+        },
         error: (msg, code) => {
             spinner.stop()
             logger.error(msg, code)

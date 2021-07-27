@@ -5,7 +5,10 @@
  */
 
 import { promise } from '@vasanthdeveloper/utilities'
+import chalk from 'chalk'
 import execa from 'execa'
+
+import { logger } from '../../../logger.js'
 
 export default async (args, { hook, sudo }) => {
     // simply skip, if "-r, --run-hooks" is not provided
@@ -17,6 +20,7 @@ export default async (args, { hook, sudo }) => {
     const prefix = sudo ? 'sudo' : ''
 
     // run the command
+    logger.verbose(`Running ${chalk.gray(`${prefix} bash ${hook}`.trim())}`)
     const { error } = await promise.handle(
         execa(`${prefix} bash ${hook}`, { shell: true }),
     )

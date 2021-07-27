@@ -4,11 +4,15 @@
  */
 
 import { promise } from '@vasanthdeveloper/utilities'
+import chalk from 'chalk'
+import { highlight } from 'cli-highlight'
 import fs from 'fs/promises'
 import grayMatter from 'gray-matter'
 import hbs from 'handlebars'
 import Joi from 'joi'
-import path from 'path'
+import yaml from 'js-yaml'
+
+import { logger } from '../../../logger.js'
 
 const modSchema = Joi.object({
     name: Joi.string(),
@@ -20,7 +24,8 @@ const modSchema = Joi.object({
     sudo: Joi.bool().default(false),
 })
 
-export default async ({ data, files }) => {
+export default async ({ data, files, log }) => {
+    logger.verbose('Starting parse modules')
     const returnable = []
 
     for (const file of files) {
@@ -51,13 +56,19 @@ export default async ({ data, files }) => {
 
         if (error) {
             // code 4: invalid properties for a config file
-            console.log(
-                `Invalid properties ${error.message} in 👇\n${path.relative(
-                    process.cwd(),
+            log.error(
+                `Invalid property ${error.message} in 👇\n${chalk.gray.dim(
                     file.file,
+                )}\n\n${highlight(
+                    yaml.dump(props, {
+                        indent: 4,
+                    }),
+                    {
+                        language: 'yaml',
+                    },
                 )}`,
+                4,
             )
-            process.exit(4)
         }
 
         // push a new module definition into our returnable

@@ -23,7 +23,9 @@ export default async ({ log, dir = process.cwd() }) => {
     // code 2: No serverfiles.yml file found in the current directory
     if (error)
         log.error(
-            `Cannot a find serverfiles.yml file in 👇\n${chalk.gray(dir)}`,
+            `Cannot a find ${chalk.gray(
+                'serverfiles.yml',
+            )} file in 👇\n${chalk.gray(dir)}`,
             2,
         )
 
@@ -35,7 +37,12 @@ export default async ({ log, dir = process.cwd() }) => {
 
     if (error)
         // code 3: Invalid property in serverfiles.yml
-        log.error(`Invalid property ${error.message} in serverfiles.yml`, 3)
+        log.error(
+            `Property ${chalk.whiteBright(error.message)} in ${chalk.gray(
+                'serverfiles.yml',
+            )}`,
+            3,
+        )
 
     // return the config object
     return config || {}
