@@ -35,7 +35,7 @@ export default async ({ args, data, log }) => {
         mod.dest = path.join(args.dir, mod.dest)
 
         // 2. take a backup of the config file we're writing
-        await backup(args, mod)
+        await backup(args, mod, log)
 
         // 3. write the rendered config file
         logger.verbose(`Writing ${chalk.gray(mod.dest)}`)

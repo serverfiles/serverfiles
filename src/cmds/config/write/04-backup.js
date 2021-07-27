@@ -6,16 +6,27 @@
 import { promise } from '@vasanthdeveloper/utilities'
 import chalk from 'chalk'
 import fs from 'fs/promises'
+import path from 'path'
 
 import { logger } from '../../../logger.js'
 import fsUtility from '../../../utilities/fs.js'
 
-export const backup = async ({ dir }, { hook, dest, sudo }) => {
+export const backup = async ({ dir }, { sudo, name, hook, dest }, log) => {
     // only write a backup when
     // 1. we're working directly on the root filesystem
     // 2. there's a hook file
     if (dir != '/') return
     if (Boolean(hook) == false) return
+
+    // handle when source file doesn't exist
+    const { error } = await promise.handle(fs.stat(dest))
+
+    if (error)
+        return log.warn(
+            `No config found for ${chalk.gray(
+                name || path.basename(dest),
+            )}, skipping backup`,
+        )
 
     logger.verbose(`Backing up ${chalk.gray(`${dest}.serverfiles.backup`)}`)
     await fsUtility.copy({
