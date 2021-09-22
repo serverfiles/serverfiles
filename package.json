@@ -17,10 +17,10 @@
         "url": "https://github.com/serverfiles/serverfiles.git"
     },
     "scripts": {
-        "clean": "rm -rf bin build",
+        "clean": "rimraf bin build",
         "transpile": "esbuild --platform=node --bundle --outfile=build/serverfiles.js src/serverfiles.js",
-        "compile": "pkg --no-bytecode --public --targets latest-linux-x64,latest-macos-x64 --public-packages '*' --compress brotli --out-path bin build/serverfiles.js",
-        "compile:clean": "rm -rf build",
+        "compile": "pkg --no-bytecode --public --targets latest-linux-x64,latest-macos-x64,latest-win-x64 --public-packages '*' --compress brotli --out-path bin build/serverfiles.js",
+        "compile:clean": "rimraf build",
         "build": "run-s clean transpile compile compile:clean"
     },
     "keywords": [],
@@ -55,6 +55,7 @@
         "eslint-plugin-simple-import-sort": "^7.0.0",
         "npm-run-all": "^4.1.5",
         "pkg": "^5.3.0",
-        "prettier": "^2.3.2"
+        "prettier": "^2.3.2",
+        "rimraf": "^3.0.2"
     }
 }
