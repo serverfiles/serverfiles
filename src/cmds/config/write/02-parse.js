@@ -3,7 +3,7 @@
  *  Created On 25 July 2021
  */
 
-import { promise } from '@vasanthdeveloper/utilities'
+import { promise } from '@vsnthdev/utilities-node'
 import chalk from 'chalk'
 import { highlight } from 'cli-highlight'
 import fs from 'fs/promises'

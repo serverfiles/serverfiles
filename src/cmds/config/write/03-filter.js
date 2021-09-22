@@ -5,7 +5,7 @@
  *  Created On 25 July 2021
  */
 
-import { promise } from '@vasanthdeveloper/utilities'
+import { promise } from '@vsnthdev/utilities-node'
 import execa from 'execa'
 
 import { logger } from '../../../logger.js'

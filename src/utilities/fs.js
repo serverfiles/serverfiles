@@ -4,7 +4,7 @@
  *  Created On 20 July 2021
  */
 
-import { promise } from '@vasanthdeveloper/utilities'
+import { promise } from '@vsnthdev/utilities-node'
 import execa from 'execa'
 import fs from 'fs'
 import mkdirp from 'mkdirp'

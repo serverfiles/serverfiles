@@ -4,7 +4,7 @@
  *  Created On 13 July 2021
  */
 
-import { promise } from '@vasanthdeveloper/utilities'
+import { promise } from '@vsnthdev/utilities-node'
 import chalk from 'chalk'
 import fs from 'fs/promises'
 import yaml from 'js-yaml'
