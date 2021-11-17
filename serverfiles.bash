@@ -4,7 +4,21 @@
 #  Created On 17 November 2021
 #
 
-source ./variables.bash
-source ./help.bash
+SCRIPT=$(realpath $0)
+SCRIPTPATH=$(dirname $SCRIPT)
 
-display_help
+# COLORS
+RESET=$(tput sgr0)
+DIM=$(tput dim)
+BOLD=$(tput bold)
+UNDERLINE=$(tput smul)
+WHITE=$(tput setaf 7)
+AMBER=$(tput setaf 11)
+BLUE=$(tput setaf 14)
+
+# automatically link itself as a universal execiable
+source "$SCRIPTPATH/install.bash"
+
+# parse command line arguments and show help if asked
+source "$SCRIPTPATH/args/help.bash"
+source "$SCRIPTPATH/args/args.bash"
