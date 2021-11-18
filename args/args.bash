@@ -14,7 +14,16 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         -v|--verbose)
-            VERBOSE="true"
+            VERBOSE=true
+            shift
+            ;;
+        -n|--no-functions)
+            FUNCTIONS=false
+            shift
+            ;;
+        -d|--dir)
+            DEST_DIR="$(realpath $2)"
+            shift
             shift
             ;;
         *)

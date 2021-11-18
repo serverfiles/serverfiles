@@ -15,10 +15,15 @@ UNDERLINE=$(tput smul)
 WHITE=$(tput setaf 7)
 AMBER=$(tput setaf 11)
 BLUE=$(tput setaf 14)
+MAGENTA=$(tput setaf 5)
+GRAY=$(tput setaf 0)
 
 # automatically link itself as a universal execiable
 source "$SCRIPTPATH/install.bash"
 
 # parse command line arguments and show help if asked
+source "$SCRIPTPATH/args/defaults.bash"
 source "$SCRIPTPATH/args/help.bash"
 source "$SCRIPTPATH/args/args.bash"
+
+echo "$DEST_DIR"
