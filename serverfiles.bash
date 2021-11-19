@@ -20,7 +20,7 @@ GRAY=$(tput setaf 0)
 RED=$(tput setaf 9)
 GREEN=$(tput setaf 10)
 
-# automatically link itself as a universal execiable
+# automatically link itself as a universal executable
 if [ ! -f /usr/local/bin/serverfile ]; then
     echo "⚠️ ${AMBER}Warning:${RESET} Universal executable not detected"
     echo "🔊 ${BLUE}Info:${RESET} Attempting to link as universal executable password may be asked"
@@ -30,9 +30,6 @@ if [ ! -f /usr/local/bin/serverfile ]; then
     echo "🔊 ${BLUE}Info:${RESET} You can now invoke \"${WHITE}${BOLD}serverfile${RESET}\" command system-wide"
     exit 0
 fi
-
-# check for program updates in background
-bash "$SCRIPTPATH/updates/check.bash" &
 
 # perform a program update
 source "$SCRIPTPATH/updates/update.bash"
@@ -49,6 +46,9 @@ if [[ $(id -u) -ne 0 ]]; then
     echo "   ownership can be set correctly"
     exit 1
 fi
+
+# check for program updates in background
+bash "$SCRIPTPATH/updates/check.bash" &
 
 # register the install_serverfile() function
 source "$SCRIPTPATH/serverfile.bash"
