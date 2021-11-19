@@ -26,4 +26,10 @@ source "$SCRIPTPATH/args/defaults.bash"
 source "$SCRIPTPATH/args/help.bash"
 source "$SCRIPTPATH/args/args.bash"
 
-echo "$DEST_DIR"
+# register the install_serverfile() function
+source "$SCRIPTPATH/serverfile.bash"
+
+# loop through each config script provided
+for CSCRIPT in $@; do
+    install_serverfile $(realpath $CSCRIPT)
+done

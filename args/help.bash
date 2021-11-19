@@ -6,7 +6,7 @@
 display_help() {
     echo ""
     echo " ${WHITE}${BOLD}USAGE${RESET}"
-    echo "    ${WHITE}$(basename $0)${RESET} [${AMBER}options${RESET}] <${BLUE}config script${RESET}>"
+    echo "    ${WHITE}$(basename $0)${RESET} [${AMBER}options${RESET}] <${BLUE}config scripts...${RESET}>"
     echo ""
     echo "    Dynamically write ⚗️ config files to 🐧 Linux servers."
     echo ""

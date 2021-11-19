@@ -4,7 +4,7 @@
 #
 
 # absolute path where the rendered config should be written
-WRITE_TO="example.txt"
+WRITE_TO="$HOME/Projects/serverfiles/example/example.txt"
 
 # before_write() is optional will be executed before writing the config file
 # if this function fails to execute (ie. returns a non-zero exit code)
