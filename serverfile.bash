@@ -46,7 +46,7 @@ install_serverfile() {
 
     # write the config file to the destination
     CONFIG_STRING=$(config | sed -Ez '$ s/\n+$//' | sed -e :a -e '/./,$!d;/^\n*$/{$d;N;};/\n$/ba')
-    sudo -u $EXE_USER "mkdir -p $(dirname $WRITE_TO)"
+    sudo -u $EXE_USER mkdir -p $(dirname $WRITE_TO)
     echo "$CONFIG_STRING" | sudo -u $EXE_USER tee "$WRITE_TO" > /dev/null
 
     # execute the after_write function
