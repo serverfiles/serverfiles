@@ -69,4 +69,7 @@ install_serverfile() {
             echo "Exit code was $EXIT_CODE"
         fi
     fi
+
+    # tell the user we've updated a config file
+    echo "✅ ${GREEN}Success:${RESET} Updated ${GRAY}${UNDERLINE}$WRITE_TO${RESET}"
 }

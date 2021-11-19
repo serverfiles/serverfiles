@@ -18,6 +18,7 @@ BLUE=$(tput setaf 14)
 MAGENTA=$(tput setaf 5)
 GRAY=$(tput setaf 0)
 RED=$(tput setaf 9)
+GREEN=$(tput setaf 10)
 
 # automatically link itself as a universal execiable
 source "$SCRIPTPATH/install.bash"
