@@ -24,10 +24,14 @@ install_serverfile() {
 
     # execute the before_write function
     if [ $FUNCTIONS = true ]; then
+        # export the before_write function to be accessible
+        # to the subshell we'll be creating
+        export -f before_write
+
         if [ $VERBOSE = true ]; then
-            before_write
+            su $EXE_USER -c 'bash -c before_write'
         else
-            OUTPUT=$(before_write)
+            OUTPUT=$(su $EXE_USER -c 'bash -c before_write')    
         fi
 
         # grab exit code & check if it's not zero
@@ -46,10 +50,14 @@ install_serverfile() {
 
     # execute the after_write function
     if [ $FUNCTIONS = true ]; then
+        # export the after_write function to be accessible
+        # to the subshell we'll be creating
+        export -f after_write
+
         if [ $VERBOSE = true ]; then
-            after_write
+            su $EXE_USER -c 'bash -c after_write'
         else
-            OUTPUT=$(after_write)
+            OUTPUT=$(su $EXE_USER -c 'bash -c after_write')    
         fi
 
         # grab exit code & check if it's not zero
