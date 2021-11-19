@@ -20,5 +20,6 @@ display_help() {
     echo "    Read more ${WHITE}${BOLD}${UNDERLINE}https://github.com/serverfiles/serverfiles${RESET}"
     echo ""
     echo "    See \"${WHITE}${BOLD}$(basename $0)${RESET} ${AMBER}--help${RESET}\""
+    echo ""
     exit 0
 }

@@ -46,4 +46,4 @@ chmod +x /usr/local/bin/serverfile
 # tell the user we're done
 echo ""
 echo "✅ ${GREEN}Success:${RESET} Successfully installed ${WHITE}${BOLD}serverfiles${RESET} on $(hostname)"
-echo "   You can now access the ${GRAY}serverfile${RESET} command system-wide"
+echo "   You can now access the ${WHITE}${BOLD}serverfile${RESET} command system-wide"
