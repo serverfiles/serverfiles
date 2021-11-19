@@ -17,6 +17,7 @@ LATEST_SHA=${LATEST_SHA:8}
 LATEST_SHA=${LATEST_SHA::-2}
 
 # get current sha hash
+cd "$SCRIPTPATH"
 CURRENT_SHA=$(git rev-parse HEAD)
 
 # we assume we've got an update if both SHAs are
