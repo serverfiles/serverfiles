@@ -14,6 +14,14 @@ install_serverfile() {
         WRITE_TO="$DEST_DIR/${WRITE_TO#/}"
     fi
 
+    # automatically detect which user to execute
+    # as depending on the writing path
+    if [[ "$WRITE_TO" == /home* ]]; then
+        EXE_USER=$(echo ${WRITE_TO:6} | cut -f1 -d"/")
+    else
+        EXE_USER=root
+    fi
+
     # execute the before_write function
     if [ $FUNCTIONS = true ]; then
         if [ $VERBOSE = true ]; then
@@ -34,7 +42,7 @@ install_serverfile() {
 
     # write the config file to the destination
     CONFIG_STRING=$(config | sed -Ez '$ s/\n+$//' | sed -e :a -e '/./,$!d;/^\n*$/{$d;N;};/\n$/ba')
-    echo "$CONFIG_STRING" > $WRITE_TO
+    echo "$CONFIG_STRING" | sudo -u $EXE_USER tee "$WRITE_TO" > /dev/null
 
     # execute the after_write function
     if [ $FUNCTIONS = true ]; then
