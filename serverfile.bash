@@ -44,9 +44,14 @@ install_serverfile() {
         fi
     fi
 
-    # write the config file to the destination
-    CONFIG_STRING=$(config | sed -Ez '$ s/\n+$//' | sed -e :a -e '/./,$!d;/^\n*$/{$d;N;};/\n$/ba')
+    # execute the config function and render the variables
+    CONFIG_STRING=$(config | sed 's/^.\{4\}//')
     sudo -u $EXE_USER mkdir -p $(dirname $WRITE_TO)
+
+    # additional transformations using Python 3
+    CONFIG_STRING=$(echo "$CONFIG_STRING" | python -c "$(echo -e "import sys\nlines = sys.stdin.read()\nprint(lines.strip())")")
+
+    # write the config file to the destination
     echo "$CONFIG_STRING" | sudo -u $EXE_USER tee "$WRITE_TO" > /dev/null
 
     # execute the after_write function
